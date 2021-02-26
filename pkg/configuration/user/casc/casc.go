@@ -41,7 +41,7 @@ func (c *configurationAsCode) Ensure(_ *v1alpha2.Jenkins) (requeue bool, err err
 		return strings.HasSuffix(name, ".yaml") || strings.HasSuffix(name, ".yml")
 	}, func(groovyScript string) string {
 		return fmt.Sprintf(applyConfigurationAsCodeGroovyScriptFmt, prepareScript(groovyScript))
-	})
+	}, false)
 }
 
 const applyConfigurationAsCodeGroovyScriptFmt = `

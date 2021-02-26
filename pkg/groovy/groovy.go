@@ -111,7 +111,7 @@ func (g *Groovy) WaitForSecretSynchronization(secretsPath string) (requeue bool,
 }
 
 // Ensure runs all groovy scripts configured in customization structure
-func (g *Groovy) Ensure(filter func(name string) bool, updateGroovyScript func(groovyScript string) string) (requeue bool, err error) {
+func (g *Groovy) Ensure(filter func(name string) bool, updateGroovyScript func(groovyScript string) string, isPostConfigurations bool) (requeue bool, err error) {
 	secret := &corev1.Secret{}
 	if len(g.customization.Secret.Name) > 0 {
 		err := g.k8sClient.Get(context.TODO(), types.NamespacedName{Name: g.customization.Secret.Name, Namespace: g.jenkins.ObjectMeta.Namespace}, secret)
@@ -120,7 +120,12 @@ func (g *Groovy) Ensure(filter func(name string) bool, updateGroovyScript func(g
 		}
 	}
 
-	for _, configMapRef := range g.customization.Configurations {
+	configurations := g.customization.Configurations
+	if isPostConfigurations {
+		configurations = g.customization.PostConfigurations
+	}
+
+	for _, configMapRef := range configurations {
 		configMap := &corev1.ConfigMap{}
 		err := g.k8sClient.Get(context.TODO(), types.NamespacedName{Name: configMapRef.Name, Namespace: g.jenkins.ObjectMeta.Namespace}, configMap)
 		if err != nil {

@@ -309,6 +309,15 @@ func (r *JenkinsReconciler) reconcile(request reconcile.Request) (reconcile.Resu
 		return result, jenkins, nil
 	}
 
+	// Reconcile post seed job casc
+	result, err = userConfiguration.ReconcilePostCasc()
+	if err != nil {
+		return reconcile.Result{}, jenkins, err
+	}
+	if result.Requeue {
+		return result, jenkins, nil
+	}
+
 	if jenkins.Status.UserConfigurationCompletedTime == nil {
 		now := metav1.Now()
 		jenkins.Status.UserConfigurationCompletedTime = &now

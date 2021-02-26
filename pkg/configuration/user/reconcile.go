@@ -21,6 +21,7 @@ import (
 type ReconcileUserConfiguration interface {
 	ReconcileCasc() (reconcile.Result, error)
 	ReconcileOthers() (reconcile.Result, error)
+	ReconcilePostCasc() (reconcile.Result, error)
 	Validate(jenkins *v1alpha2.Jenkins) ([]string, error)
 }
 
@@ -41,7 +42,20 @@ func New(configuration configuration.Configuration, jenkinsClient jenkinsclient.
 
 // ReconcileCasc is a reconcile loop for casc.
 func (r *reconcileUserConfiguration) ReconcileCasc() (reconcile.Result, error) {
-	result, err := r.ensureCasc(r.jenkinsClient)
+	result, err := r.ensureCasc(r.jenkinsClient, false)
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+	if result.Requeue {
+		return result, nil
+	}
+
+	return reconcile.Result{}, nil
+}
+
+// ReconcilePostCasc is a reconcile loop for post seed job casc.
+func (r *reconcileUserConfiguration) ReconcilePostCasc() (reconcile.Result, error) {
+	result, err := r.ensureCasc(r.jenkinsClient, true)
 	if err != nil {
 		return reconcile.Result{}, err
 	}
@@ -90,7 +104,7 @@ func (r *reconcileUserConfiguration) ensureSeedJobs() (reconcile.Result, error) 
 	return reconcile.Result{}, nil
 }
 
-func (r *reconcileUserConfiguration) ensureCasc(jenkinsClient jenkinsclient.Jenkins) (reconcile.Result, error) {
+func (r *reconcileUserConfiguration) ensureCasc(jenkinsClient jenkinsclient.Jenkins, isPostConfigurations bool) (reconcile.Result, error) {
 	configurationAsCodeClient := casc.New(jenkinsClient, r.Client, r.Configuration.Jenkins)
 	requeue, err := configurationAsCodeClient.Ensure(r.Configuration.Jenkins)
 	if err != nil {
@@ -110,7 +124,7 @@ func (r *reconcileUserConfiguration) ensureCasc(jenkinsClient jenkinsclient.Jenk
 	}
 	requeue, err = groovyClient.Ensure(func(name string) bool {
 		return strings.HasSuffix(name, ".groovy")
-	}, groovy.AddSecretsLoaderToGroovyScript(resources.GroovyScriptsSecretVolumePath))
+	}, groovy.AddSecretsLoaderToGroovyScript(resources.GroovyScriptsSecretVolumePath), isPostConfigurations)
 	if err != nil {
 		return reconcile.Result{}, err
 	}

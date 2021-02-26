@@ -409,10 +409,10 @@ func TestGroovy_Ensure(t *testing.T) {
 		}
 
 		// when
-		requeue, err := groovyClient.Ensure(onlyGroovyFilesFunc, noUpdateGroovyScript)
+		requeue, err := groovyClient.Ensure(onlyGroovyFilesFunc, noUpdateGroovyScript, false)
 		require.NoError(t, err)
 		assert.True(t, requeue)
-		requeue, err = groovyClient.Ensure(onlyGroovyFilesFunc, noUpdateGroovyScript)
+		requeue, err = groovyClient.Ensure(onlyGroovyFilesFunc, noUpdateGroovyScript, false)
 		require.NoError(t, err)
 		assert.False(t, requeue)
 
@@ -469,10 +469,10 @@ func TestGroovy_Ensure(t *testing.T) {
 		}
 
 		// when
-		requeue, err := groovyClient.Ensure(allGroovyScriptsFunc, updateGroovyFunc)
+		requeue, err := groovyClient.Ensure(allGroovyScriptsFunc, updateGroovyFunc, false)
 		require.NoError(t, err)
 		assert.True(t, requeue)
-		requeue, err = groovyClient.Ensure(allGroovyScriptsFunc, updateGroovyFunc)
+		requeue, err = groovyClient.Ensure(allGroovyScriptsFunc, updateGroovyFunc, false)
 		require.NoError(t, err)
 		assert.False(t, requeue)
 
@@ -525,10 +525,10 @@ func TestGroovy_Ensure(t *testing.T) {
 		groovyClient := New(jenkinsClient, fakeClient, jenkins, configurationType, customization)
 
 		// when
-		requeue, err := groovyClient.Ensure(allGroovyScriptsFunc, noUpdateGroovyScript)
+		requeue, err := groovyClient.Ensure(allGroovyScriptsFunc, noUpdateGroovyScript, false)
 		require.NoError(t, err)
 		assert.True(t, requeue)
-		requeue, err = groovyClient.Ensure(allGroovyScriptsFunc, noUpdateGroovyScript)
+		requeue, err = groovyClient.Ensure(allGroovyScriptsFunc, noUpdateGroovyScript, false)
 		require.NoError(t, err)
 		assert.False(t, requeue)
 
@@ -593,10 +593,10 @@ func TestGroovy_Ensure(t *testing.T) {
 		groovyClient := New(jenkinsClient, fakeClient, jenkins, configurationType, customization)
 
 		// when
-		requeue, err := groovyClient.Ensure(allGroovyScriptsFunc, noUpdateGroovyScript)
+		requeue, err := groovyClient.Ensure(allGroovyScriptsFunc, noUpdateGroovyScript, false)
 		require.NoError(t, err)
 		assert.True(t, requeue)
-		requeue, err = groovyClient.Ensure(allGroovyScriptsFunc, noUpdateGroovyScript)
+		requeue, err = groovyClient.Ensure(allGroovyScriptsFunc, noUpdateGroovyScript, false)
 		require.NoError(t, err)
 		assert.False(t, requeue)
 

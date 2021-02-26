@@ -654,8 +654,9 @@ type ConfigMapRef struct {
 
 // Customization defines configuration of Jenkins customization.
 type Customization struct {
-	Secret         SecretRef      `json:"secret"`
-	Configurations []ConfigMapRef `json:"configurations"`
+	Secret             SecretRef      `json:"secret"`
+	Configurations     []ConfigMapRef `json:"configurations"`
+	PostConfigurations []ConfigMapRef `json:"postConfigurations"`
 }
 
 // GroovyScripts defines configuration of Jenkins customization via groovy scripts.

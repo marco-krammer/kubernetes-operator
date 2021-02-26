@@ -406,6 +406,6 @@ func (r *JenkinsBaseConfigurationReconciler) ensureBaseConfiguration(jenkinsClie
 		return strings.HasSuffix(name, ".groovy")
 	}, func(groovyScript string) string {
 		return groovyScript
-	})
+	}, false)
 	return reconcile.Result{Requeue: requeue}, err
 }
